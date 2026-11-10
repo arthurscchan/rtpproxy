@@ -116,7 +116,7 @@ do
   OBJS="${OBJS} ${obj}"
 done
 
-ALL="command_parser rtp_parser rtcp_parser rtp_session"
+ALL="command_parser rtp_parser rtcp_parser rtp_session rtp_record"
 OBJS0="${OBJS}"
 for fz in ${ALL}
 do
@@ -145,6 +145,15 @@ do
     fi
   done
 done
+
+# fuzz_rtp_record: pack the seed corpus (chunk-framed sockaddr + RTP
+# packets; regenerate with scripts/fuzz/gen_rtp_record_seeds.py).
+if [ -d scripts/fuzz/rtp_record_seeds ]
+then
+  (cd scripts/fuzz/rtp_record_seeds && \
+   zip -q -j "${OUT}/fuzz_rtp_record_seed_corpus.zip" ./*.bin)
+fi
+
 if [ "${OUT}" != "." ]
 then
   cp -Rp ${OUT} build-out
